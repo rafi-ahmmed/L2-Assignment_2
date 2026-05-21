@@ -18,5 +18,7 @@ routes.patch(
    issueController.updateIssue
 );
 
+routes.delete('/:id', auth(userRole.MAINTAINER), issueController.deleteIssue);
+
 const issueRouter = routes;
 export default issueRouter;

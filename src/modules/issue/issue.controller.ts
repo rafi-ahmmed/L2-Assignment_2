@@ -29,6 +29,7 @@ const createIssue = async (req: Request, res: Response) => {
          statusCode: 500,
          success: false,
          message: message,
+         errors: error,
       });
    }
 };
@@ -53,6 +54,7 @@ const getAllIssues = async (req: Request, res: Response) => {
          statusCode: 500,
          success: false,
          message: message,
+         errors: error,
       });
    }
 };
@@ -79,6 +81,7 @@ const getSingleIssue = async (req: Request, res: Response) => {
          statusCode: 500,
          success: false,
          message: message,
+         errors: error,
       });
    }
 };
@@ -110,17 +113,46 @@ const updateIssue = async (req: Request, res: Response) => {
          statusCode: 500,
          success: false,
          message: message,
+         errors: error,
       });
    }
 };
 
+const deleteIssue = async (req: Request, res: Response) => {
+   try {
+      const jwtData = req.user as JwtPayload;
 
+       await issueServices.deleteIssueFromDB(
+         req.params.id as string,
+         jwtData
+      );
+      
+      return sendResponse(res, {
+         statusCode: 200,
+         success: true,
+         message: 'Issue deleted successfully',
+      });
+   } catch (error) {
+      let message = 'Something went wrong';
+
+      if (error instanceof Error) {
+         message = error.message;
+      }
+      sendResponse(res, {
+         statusCode: 500,
+         success: false,
+         message: message,
+         errors: error,
+      });
+   }
+};
 
 const issueController = {
    createIssue,
    getAllIssues,
    getSingleIssue,
    updateIssue,
+   deleteIssue,
 };
 
 export default issueController;

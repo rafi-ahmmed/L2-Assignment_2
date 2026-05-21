@@ -34,6 +34,7 @@ const auth = (...roles: ROLE[]) => {
                statusCode: 404,
                message: 'User not found!',
                success: false,
+               
             });
          }
 

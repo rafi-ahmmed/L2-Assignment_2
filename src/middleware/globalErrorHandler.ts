@@ -9,6 +9,7 @@ const globalErrorHandler = (
    res.status(500).json({
       success: false,
       message: err instanceof Error ? err.message : 'Internal server error',
+      error: err,
    });
 };
 

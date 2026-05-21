@@ -88,8 +88,6 @@ const updateIssueInDB = async (
    const { status, reporter_id } = await getSingleIssue(Number(id));
    const isContriButor = role === userRole.CONTRIBUTOR;
 
-   console.log(role)
-
    if (isContriButor) {
       if (userId !== reporter_id || status !== 'open') {
          throw new Error('Contributors can only update their own open issues');
@@ -113,11 +111,27 @@ const updateIssueInDB = async (
    return result.rows[0];
 };
 
+const deleteIssueFromDB = async (id: string, jwtPayload: JwtPayload) => {
+   const result = await pool.query(
+      `
+      DELETE FROM issues
+      WHERE id=$1;
+      `,
+      [Number(id)]
+   );
+
+   if(result.rowCount === 0){
+      throw new Error('Issue not found');
+   }
+   return result.rowCount;
+};
+
 const issueServices = {
    storeIssueInDB,
    getAllIssuesFromDB,
    getSingleIssueFromDB,
    updateIssueInDB,
+   deleteIssueFromDB,
 };
 
 export default issueServices;
