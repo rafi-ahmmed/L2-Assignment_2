@@ -2,6 +2,7 @@ import type { JwtPayload } from 'jsonwebtoken';
 import { pool } from '../../db/index.js';
 import {
    userRole,
+   type QueryParams,
    type TIssueReqBody,
    type TIssueUpdateBody,
 } from '../../types/index.js';
@@ -27,36 +28,51 @@ const storeIssueInDB = async (
    return result.rows[0];
 };
 
-const getAllIssuesFromDB = async () => {
-   const allIssues = await pool.query(`
+const getAllIssuesFromDB = async (query: QueryParams) => {
+   const { sort = 'newest', type, status } = query;
 
-         SELECT * FROM issues;
-      
-      `);
-   const allUsers = await getAllUsers();
+   let sql = `SELECT * FROM issues WHERE 1=1`;
+   const values: any[] = [];
 
-   const issues = allIssues.rows;
-   const users = allUsers;
+   if (type) {
+      values.push(type);
+      sql += ` AND type = $${values.length}`;
+   }
 
-   const finalIssues = issues.map((issue) => {
-      const reporter = users.find((user) => user.id === issue.reporter_id);
+   if (status) {
+      values.push(status);
+      sql += ` AND status = $${values.length}`;
+   }
 
-      const { updated_at, created_at, password, email, ...newReporter } =
-         reporter;
+   sql +=
+      sort === 'oldest'
+         ? ` ORDER BY created_at ASC`
+         : ` ORDER BY created_at DESC`;
 
-      return {
-         id: issue.id,
-         title: issue.title,
-         description: issue.description,
-         type: issue.type,
-         status: issue.status,
-         reporter: newReporter,
-         created_at: issue.created_at,
-         updated_at: issue.updated_at,
-      };
-   });
+   const result = await pool.query(sql, values);
+   const issues = result.rows;
 
-   return finalIssues;
+   const finalData = await Promise.all(
+      issues.map(async (issue) => {
+         const userResult = await pool.query(
+            `SELECT id, name, role FROM users WHERE id=$1`,
+            [issue.reporter_id]
+         );
+
+         return {
+            id: issue.id,
+            title: issue.title,
+            description: issue.description,
+            type: issue.type,
+            status: issue.status,
+            reporter: userResult.rows[0] || null,
+            created_at: issue.created_at,
+            updated_at: issue.updated_at,
+         };
+      })
+   );
+
+   return finalData;
 };
 
 const getSingleIssueFromDB = async (id: string) => {
@@ -120,7 +136,7 @@ const deleteIssueFromDB = async (id: string, jwtPayload: JwtPayload) => {
       [Number(id)]
    );
 
-   if(result.rowCount === 0){
+   if (result.rowCount === 0) {
       throw new Error('Issue not found');
    }
    return result.rowCount;

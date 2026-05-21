@@ -36,7 +36,7 @@ const createIssue = async (req: Request, res: Response) => {
 
 const getAllIssues = async (req: Request, res: Response) => {
    try {
-      const result = await issueServices.getAllIssuesFromDB();
+      const result = await issueServices.getAllIssuesFromDB(req.query);
       // console.log(req.query.sort);
 
       return sendResponse(res, {
@@ -122,11 +122,8 @@ const deleteIssue = async (req: Request, res: Response) => {
    try {
       const jwtData = req.user as JwtPayload;
 
-       await issueServices.deleteIssueFromDB(
-         req.params.id as string,
-         jwtData
-      );
-      
+      await issueServices.deleteIssueFromDB(req.params.id as string, jwtData);
+
       return sendResponse(res, {
          statusCode: 200,
          success: true,

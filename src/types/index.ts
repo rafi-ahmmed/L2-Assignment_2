@@ -50,3 +50,9 @@ export type TJwtPayload = {
    name: string;
    role: ROLE;
 };
+
+export type QueryParams = {
+   sort?: string;
+   type?: string;
+   status?: string;
+};
