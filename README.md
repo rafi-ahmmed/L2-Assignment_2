@@ -44,10 +44,11 @@ A collaborative platform for software teams to report bugs, suggest features, an
 
 ---
 
-# 🔎 Query Parameters
+## 🧪 API Query Examples
 
-## Get All Issues
+```bash
+/api/issues?sort=newest or oldest
+/api/issues?type=bug or feature_request
+/api/issues?status=open or in_progress or resolved
 
-```http
-GET /api/issues?sort=newest&type=bug&status=open
 ```
