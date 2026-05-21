@@ -6,7 +6,7 @@ A collaborative platform for software teams to report bugs, suggest features, an
 
 # 🌍 Live URL
 
-[Live Server](https://assignment-2-gspic5lyj-rafi-ahmmeds-projects.vercel.app/)
+[Live Server](https://devpulse-a2-eta-sandy.vercel.app/)
 
 # 🚀 Tech Stack
 
