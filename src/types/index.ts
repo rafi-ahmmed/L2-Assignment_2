@@ -51,7 +51,7 @@ export type TJwtPayload = {
    role: ROLE;
 };
 
-export type QueryParams = {
+export type TQueryParams = {
    sort?: string;
    type?: string;
    status?: string;

@@ -2,7 +2,7 @@ import type { JwtPayload } from 'jsonwebtoken';
 import { pool } from '../../db/index.js';
 import {
    userRole,
-   type QueryParams,
+   type TQueryParams,
    type TIssueReqBody,
    type TIssueUpdateBody,
 } from '../../types/index.js';
@@ -28,7 +28,7 @@ const storeIssueInDB = async (
    return result.rows[0];
 };
 
-const getAllIssuesFromDB = async (query: QueryParams) => {
+const getAllIssuesFromDB = async (query: TQueryParams) => {
    const { sort = 'newest', type, status } = query;
 
    let sql = `SELECT * FROM issues WHERE 1=1`;
@@ -101,7 +101,11 @@ const updateIssueInDB = async (
 ) => {
    const { title, description, type } = userPayload;
    const { id: userId, name, role } = jwtPayload;
-   const { status, reporter_id } = await getSingleIssue(Number(id));
+   const issue = await getSingleIssue(Number(id));
+   if (issue === undefined) {
+      throw new Error('Issue not found');
+   }
+   const { status, reporter_id } = issue;
    const isContriButor = role === userRole.CONTRIBUTOR;
 
    if (isContriButor) {

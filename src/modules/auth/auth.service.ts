@@ -15,11 +15,9 @@ const createUserInDB = async (payload: TSignupPayload) => {
 
    const result = await pool.query(
       `
-
          INSERT INTO users(email,name,password,role)
          VALUES($1,$2,$3,$4)
          RETURNING *
-
       `,
       [email, name, hashPass, role]
    );

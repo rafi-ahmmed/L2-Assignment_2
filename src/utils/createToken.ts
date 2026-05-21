@@ -8,8 +8,8 @@ type TTokenPayload = {
    role: ROLE;
 };
 
-const createToken = async (payload: TTokenPayload) => {
-   const accessToken = await jwt.sign(payload, config.jwtSecret, {
+const createToken = (payload: TTokenPayload) => {
+   const accessToken = jwt.sign(payload, config.jwtSecret, {
       expiresIn: '7d',
    });
 

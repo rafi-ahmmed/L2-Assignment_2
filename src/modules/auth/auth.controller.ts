@@ -12,7 +12,7 @@ const signUpUser = async (req: Request, res: Response) => {
       const payload: TSignupPayload = req.body;
 
       const result: IUser = await authServices.createUserInDB(payload);
-      sendResponse(res, {
+      return sendResponse(res, {
          statusCode: 201,
          success: true,
          message: 'User registered successfully',
@@ -24,7 +24,7 @@ const signUpUser = async (req: Request, res: Response) => {
       if (error instanceof Error) {
          message = error.message;
       }
-      sendResponse(res, {
+      return sendResponse(res, {
          statusCode: 500,
          success: false,
          message: message,
