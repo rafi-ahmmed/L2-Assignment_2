@@ -1,10 +1,18 @@
 import express, { type Request, type Response } from 'express';
-import config from './config/index.js';
+import authRouter from './modules/auth/auth.route.js';
+import globalErrorHandler from './middleware/globalErrorHandler.js';
 
 const app = express();
 
+// Middlewares
+app.use(express.json());
+
 app.get('/', async (req: Request, res: Response) => {
-   res.json('This server is for dev Plus');
+   res.json('This server is for DevPulse');
 });
+
+app.use('/api/auth', authRouter);
+
+app.use(globalErrorHandler);
 
 export default app;
