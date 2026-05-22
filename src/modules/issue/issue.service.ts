@@ -102,7 +102,7 @@ const updateIssueInDB = async (
    const { title, description, type } = userPayload;
    const { id: userId, name, role } = jwtPayload;
    const issue = await getSingleIssue(Number(id));
-   if (issue === undefined) {
+   if (!issue) {
       throw new Error('Issue not found');
    }
    const { status, reporter_id } = issue;
