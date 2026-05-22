@@ -31,48 +31,49 @@ const storeIssueInDB = async (
 const getAllIssuesFromDB = async (query: TQueryParams) => {
    const { sort = 'newest', type, status } = query;
 
-   let sql = `SELECT * FROM issues WHERE 1=1`;
-   const values: any[] = [];
+   let baseQuery = `SELECT * FROM issues WHERE 1=1`;
+   const queryParams: any[] = [];
 
    if (type) {
-      values.push(type);
-      sql += ` AND type = $${values.length}`;
+      queryParams.push(type);
+      baseQuery += ` AND type = $${queryParams.length}`;
    }
 
    if (status) {
-      values.push(status);
-      sql += ` AND status = $${values.length}`;
+      queryParams.push(status);
+      baseQuery += ` AND status = $${queryParams.length}`;
    }
 
-   sql +=
+   baseQuery +=
       sort === 'oldest'
          ? ` ORDER BY created_at ASC`
          : ` ORDER BY created_at DESC`;
 
-   const result = await pool.query(sql, values);
-   const issues = result.rows;
+   const issuesResult = await pool.query(baseQuery, queryParams);
 
-   const finalData = await Promise.all(
-      issues.map(async (issue) => {
-         const userResult = await pool.query(
+   const issueList = issuesResult.rows;
+
+   const formattedIssues = await Promise.all(
+      issueList.map(async (singleIssue) => {
+         const reporterResult = await pool.query(
             `SELECT id, name, role FROM users WHERE id=$1`,
-            [issue.reporter_id]
+            [singleIssue.reporter_id]
          );
 
          return {
-            id: issue.id,
-            title: issue.title,
-            description: issue.description,
-            type: issue.type,
-            status: issue.status,
-            reporter: userResult.rows[0] || null,
-            created_at: issue.created_at,
-            updated_at: issue.updated_at,
+            id: singleIssue.id,
+            title: singleIssue.title,
+            description: singleIssue.description,
+            type: singleIssue.type,
+            status: singleIssue.status,
+            reporter: reporterResult.rows[0] || null,
+            created_at: singleIssue.created_at,
+            updated_at: singleIssue.updated_at,
          };
       })
    );
 
-   return finalData;
+   return formattedIssues;
 };
 
 const getSingleIssueFromDB = async (id: string) => {
@@ -102,7 +103,7 @@ const updateIssueInDB = async (
    const { title, description, type } = userPayload;
    const { id: userId, name, role } = jwtPayload;
    const issue = await getSingleIssue(Number(id));
-   if (!issue) {
+   if (issue) {
       throw new Error('Issue not found');
    }
    const { status, reporter_id } = issue;

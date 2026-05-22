@@ -77,7 +77,7 @@ A collaborative platform for software teams to report bugs, suggest features, an
 ## 1️⃣ Clone the repository
 
 ```bash
-git clone <https://github.com/rafi-ahmmed/L2-Assignment_2.git>
+git clone https://github.com/rafi-ahmmed/L2-Assignment_2.git
 cd devpulse-api
 ```
 
@@ -108,30 +108,30 @@ JWT_SECRET=your_access_secret
 
 ## users
 
-| Column        | Type      | Description              |
-| ------------- | --------- | ------------------------ |
-| id            | SERIAL    | Primary key              |
-| name          | VARCHAR   | User full name           |
-| email         | VARCHAR   | Unique email address     |
-| password      | TEXT      | Encrypted password       |
-| role          | VARCHAR   | contributor / maintainer |
-| created_at    | TIMESTAMP | Account creation time    |
-| updated_at    | TIMESTAMP | Account update time time |
+| Column     | Type      | Description              |
+| ---------- | --------- | ------------------------ |
+| id         | SERIAL    | Primary key              |
+| name       | VARCHAR   | User full name           |
+| email      | VARCHAR   | Unique email address     |
+| password   | TEXT      | Encrypted password       |
+| role       | VARCHAR   | contributor / maintainer |
+| created_at | TIMESTAMP | Account creation time    |
+| updated_at | TIMESTAMP | Account update time time |
 
 ---
 
 ## issues
 
-| Column      | Type      | Description                        |
-| ----------- | --------- | ---------------------------------- |
-| id          | SERIAL    | Primary key                        |
-| title       | VARCHAR   | Issue title                        |
-| description | TEXT      | Detailed issue description         |
-| type        | VARCHAR   | bug / feature_request              |
-| status      | VARCHAR   | open / in_progress / resolved      |
-| reporter_id | INTEGER   | not null but add from jwt payload  |
-| created_at  | TIMESTAMP | Issue creation time                |
-| updated_at  | TIMESTAMP | Issue update time                  |
+| Column      | Type      | Description                       |
+| ----------- | --------- | --------------------------------- |
+| id          | SERIAL    | Primary key                       |
+| title       | VARCHAR   | Issue title                       |
+| description | TEXT      | Detailed issue description        |
+| type        | VARCHAR   | bug / feature_request             |
+| status      | VARCHAR   | open / in_progress / resolved     |
+| reporter_id | INTEGER   | not null but add from jwt payload |
+| created_at  | TIMESTAMP | Issue creation time               |
+| updated_at  | TIMESTAMP | Issue update time                 |
 
 ---
 
